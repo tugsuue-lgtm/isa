@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1512">
+<title>Ажлын Хуваарь</title>
+<style>
+:root{--bg:#f4f1ed;--sur:#fff;--bdr:#e2d9d0;--txt:#1a1512;--mut:#8a8078;--acc:#c84b2f;--al:#fdf0ed;--blu:#2563eb;--sh:0 2px 10px rgba(0,0,0,.07);--nh:64px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh;padding-bottom:var(--nh)}
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nh);background:var(--txt);display:flex;z-index:100;box-shadow:0 -2px 16px rgba(0,0,0,.2)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:none;background:transparent;color:rgba(255,255,255,.35);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;border-top:3px solid transparent}
+.nb .ic{font-size:21px;line-height:1}
+.nb.on{color:#fff;border-top-color:var(--acc)}
+.pg{display:none;flex-direction:column;min-height:calc(100vh - var(--nh))}
+.pg.on{display:flex}
+.hdr{background:var(--txt);padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.hdr h1{font-family:Georgia,serif;font-size:19px;color:#fff}
+.hsub{font-size:10px;color:rgba(255,255,255,.38);margin-top:1px}
+.hr{display:flex;align-items:center;gap:6px}
+.cnb{width:34px;height:34px;border-radius:8px;border:none;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.clbl{font-family:Georgia,serif;font-size:15px;color:#fff;min-width:96px;text-align:center}
+.cnt{padding:14px;display:flex;flex-direction:column;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none}
+.br{background:var(--acc);color:#fff}.br:active{opacity:.85}
+.bo{background:transparent;color:var(--txt);border:1.5px solid var(--bdr)}.bo:active{border-color:var(--acc)}
+.bs{padding:6px 12px;font-size:12px}
+.cwrap{background:var(--sur);border-radius:14px;border:1px solid var(--bdr);overflow:hidden;box-shadow:var(--sh)}
+.cdow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--txt)}
+.cdow div{padding:7px 2px;text-align:center;font-size:9px;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.cdays{display:grid;grid-template-columns:repeat(7,1fr)}
+.cc{border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr);min-height:68px;padding:4px 3px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.cc:nth-child(7n){border-right:none}
+.cc:active{background:#f0ebe4}
+.cc.om{opacity:.32}
+.cc.td{background:var(--al)}
+.cc.sl{background:#fff0ec;outline:2px solid var(--acc);outline-offset:-2px}
+.cnum{font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;margin-bottom:2px}
+.cc.td .cnum{background:var(--acc);color:#fff}
+.ctags{display:flex;flex-direction:column;gap:1px}
+.ctag{font-size:8px;font-weight:700;padding:1px 3px;border-radius:3px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmore{font-size:8px;color:var(--mut)}
+.dp{background:var(--sur);border-radius:14px;border:1px solid var(--bdr);box-shadow:var(--sh);overflow:hidden}
+.dph{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--bdr);background:var(--bg)}
+.dpt{font-family:Georgia,serif;font-size:15px}
+.alist{display:flex;flex-direction:column}
+.arow{display:flex;align-items:flex-start;gap:7px;padding:10px 12px;border-bottom:1px solid var(--bdr);flex-wrap:wrap}
+.arow:last-child{border-bottom:none}
+.adot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.aname{font-size:12px;font-weight:700;min-width:65px;flex-shrink:0;margin-top:2px}
+.awrks{display:flex;flex-wrap:wrap;gap:3px;flex:1}
+.wpill{display:inline-flex;align-items:center;gap:2px;padding:3px 7px 3px 4px;border-radius:99px;font-size:11px;font-weight:500;background:var(--bg);border:1.5px solid var(--bdr)}
+.wav{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff;flex-shrink:0}
+.wrm{width:13px;height:13px;border-radius:50%;background:rgba(0,0,0,.08);border:none;cursor:pointer;font-size:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--mut)}
+.aadd{padding:3px 8px;border-radius:6px;background:transparent;border:1.5px dashed var(--bdr);color:var(--mut);font-size:10px;cursor:pointer;font-family:inherit;align-self:center;white-space:nowrap}
+.adel{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--bdr);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mut);flex-shrink:0;align-self:center}
+.cc.wk{background:#f9f6ff}
+.cc.wk .cnum{color:#7c3aed}
+.cc.wk.td .cnum{background:#7c3aed;color:#fff}
+.cc.wk.sl{background:#f3eeff;outline-color:#7c3aed}
+.cdow div:nth-child(6),.cdow div:nth-child(7){color:rgba(180,150,255,.7)}
+/* worker stats */
+.stat-card{background:var(--sur);border-radius:14px;border:1px solid var(--bdr);box-shadow:var(--sh);overflow:hidden}
+.stat-hdr{padding:11px 14px;border-bottom:1px solid var(--bdr);background:var(--bg);display:flex;align-items:center;justify-content:space-between}
+.stat-hdr-title{font-weight:700;font-size:13px}
+.stat-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--bdr);background:var(--bg);font-family:inherit;font-size:12px;color:var(--txt);outline:none}
+.stat-list{display:flex;flex-direction:column}
+.stat-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--bdr)}
+.stat-row:last-child{border-bottom:none}
+.stat-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.stat-nm{font-weight:600;font-size:13px;flex:1}
+.stat-bar-wrap{width:80px;height:6px;background:var(--bdr);border-radius:99px;overflow:hidden;flex-shrink:0}
+.stat-bar{height:100%;background:var(--acc);border-radius:99px}
+.stat-cnt{font-size:13px;font-weight:700;color:var(--acc);min-width:28px;text-align:right;flex-shrink:0}
+.ss{background:var(--sur);border-radius:14px;border:1px solid var(--bdr);box-shadow:var(--sh);overflow:hidden}
+.sh{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);background:var(--bg)}
+.sht{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+.bdg{font-size:9px;padding:2px 7px;border-radius:99px;font-weight:700}
+.be{background:var(--al);color:var(--acc)}
+.bw{background:#eff6ff;color:var(--blu)}
+.pl{display:flex;flex-direction:column}
+.pr{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid var(--bdr)}
+.pr:last-child{border-bottom:none}
+.pav{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.pnm{font-weight:600;font-size:13px}
+.pdt{font-size:11px;color:var(--mut);margin-top:1px}
+.pac{display:flex;gap:4px}
+.ib{width:28px;height:28px;border-radius:7px;background:transparent;border:1.5px solid var(--bdr);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mut)}
+.el{padding:18px;text-align:center;color:var(--mut);font-size:13px}
+.shr{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--bdr)}
+.shr:last-child{border-bottom:none}
+.slbtn{padding:5px 10px;border-radius:7px;background:var(--acc);color:#fff;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.ovr{display:none;position:fixed;inset:0;background:rgba(26,22,18,.6);z-index:300;align-items:flex-end;justify-content:center}
+.ovr.on{display:flex}
+.modal{background:var(--sur);border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:540px;max-height:88vh;overflow-y:auto;animation:sup .2s ease}
+@keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.drag{width:36px;height:4px;background:var(--bdr);border-radius:99px;margin:0 auto 14px}
+.modal h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
+.fg{margin-bottom:11px}
+.fg label{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
+.fg input,.fg select{width:100%;padding:10px 12px;border-radius:9px;border:1.5px solid var(--bdr);background:var(--bg);font-family:inherit;font-size:14px;color:var(--txt);outline:none}
+.fg input:focus,.fg select:focus{border-color:var(--acc);background:#fff}
+.crow{display:flex;gap:7px;flex-wrap:wrap}
+.csw{width:28px;height:28px;border-radius:7px;cursor:pointer;border:3px solid transparent;flex-shrink:0}
+.csw.sl{border-color:var(--txt);transform:scale(1.18)}
+.mact{display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--bdr)}
+.mact .btn{flex:1;justify-content:center}
+.wsl{border:1.5px solid var(--bdr);border-radius:10px;background:#fff;overflow:hidden;max-height:200px;overflow-y:auto}
+.wi{display:flex;align-items:center;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--bdr)}
+.wi:last-child{border-bottom:none}
+.wi.ck{background:var(--al)}
+.wav2{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;margin-right:8px}
+.wnm{font-size:13px;font-weight:500;flex:1}
+.wph{font-size:11px;color:var(--mut);margin-right:8px}
+.wbox{width:20px;height:20px;border-radius:5px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:#fff}
+.wi.ck .wbox{background:var(--acc);border-color:var(--acc)}
+/* worker public view */
+#WV{display:none;min-height:100vh;background:var(--bg)}
+.wvh{background:var(--txt);padding:18px 16px 14px;text-align:center}
+.wvh h1{font-family:Georgia,serif;font-size:20px;color:#fff}
+.wvsub{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px}
+.wvm{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+.wvlbl{font-family:Georgia,serif;font-size:16px}
+.wvnb{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--bdr);background:var(--sur);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.wvdays{padding:0 14px 24px}
+.wvday{background:var(--sur);border-radius:10px;border:1px solid var(--bdr);padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.wvday.tod{border-color:var(--acc);background:var(--al)}
+.wvdate{font-family:Georgia,serif;font-size:20px;font-weight:700;min-width:36px;text-align:center;color:var(--acc);line-height:1}
+.wvdow{font-size:9px;font-weight:600;color:var(--mut);text-align:center;margin-top:2px}
+.wvedot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+.wvempty{text-align:center;padding:40px 20px;color:var(--mut);font-size:13px}
+/* share modal */
+.share-url{background:var(--bg);border-radius:9px;padding:10px 12px;font-size:11px;color:var(--mut);word-break:break-all;line-height:1.6;margin-bottom:10px;border:1px solid var(--bdr)}
+#toast{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--txt);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;z-index:999;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<!-- Worker public view -->
+<div id="WV" style="display:none">
+  <div class="wvh"><h1 id="wvName">Хуваарь</h1><div class="wvsub">Таны ажлын хуваарь</div></div>
+  <div class="wvm">
+    <button class="wvnb" onclick="wvc(-1)">←</button>
+    <div class="wvlbl" id="wvLbl"></div>
+    <button class="wvnb" onclick="wvc(1)">→</button>
+  </div>
+  <div class="wvdays" id="wvDays"></div>
+</div>
+
+<div id="APP" style="display:block">
+  <div class="pg on" id="calendarPage">
+    <div class="hdr">
+      <div><h1>Хуваарь</h1><div class="hsub">АЖЛЫН ХУВААРЬ</div></div>
+      <div class="hr">
+        <button class="cnb" onclick="cm(-1)">←</button>
+        <div class="clbl" id="calLbl"></div>
+        <button class="cnb" onclick="cm(1)">→</button>
+      </div>
+    </div>
+    <div class="cnt">
+      <div class="cwrap">
+        <div class="cdow"><div>Дав</div><div>Мяг</div><div>Лха</div><div>Пүр</div><div>Баа</div><div>Бям</div><div>Ням</div></div>
+        <div class="cdays" id="cdays"></div>
+      </div>
+      <div id="dpWrap" style="display:none">
+        <div class="dp">
+          <div class="dph"><div class="dpt" id="dpt"></div><button class="btn br bs" onclick="openAssign()">+ Нэмэх</button></div>
+          <div class="alist" id="alist"></div>
+        </div>
+      </div>
+      <!-- Worker stats for current month -->
+      <div class="stat-card">
+        <div class="stat-hdr">
+          <div class="stat-hdr-title">📊 Сарын ажилласан өдөр</div>
+          <select class="stat-sel" id="statEmpSel" onchange="renderStats()">
+            <option value="">Бүгд</option>
+          </select>
+        </div>
+        <div class="stat-list" id="statList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg" id="settingsPage">
+    <div class="hdr"><div><h1>Тохиргоо</h1><div class="hsub">АЖИЛ ОЛГОГЧ · АЖИЛЧИД</div></div></div>
+    <div class="cnt">
+      <div class="ss">
+        <div class="sh"><div class="sht">🏢 Ажил олгогчид <span class="bdg be">Employer</span></div><button class="btn br bs" onclick="openEmp()">+ Нэмэх</button></div>
+        <div class="pl" id="empList"></div>
+      </div>
+      <div class="ss">
+        <div class="sh"><div class="sht">👷 Ажилчид <span class="bdg bw">Worker</span></div><button class="btn bo bs" onclick="openWrk()">+ Нэмэх</button></div>
+        <div class="pl" id="wrkList"></div>
+      </div>
+      <div class="ss">
+        <div class="sh"><div class="sht">🔗 Хуваарийн холбоос</div></div>
+        <div style="padding:12px" id="shareList"></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bnav">
+    <button class="nb on" id="nbCal" onclick="sp('calendar',this)"><span class="ic">📅</span>Хуваарь</button>
+    <button class="nb" id="nbSet" onclick="sp('settings',this)"><span class="ic">⚙️</span>Тохиргоо</button>
+  </nav>
+</div>
+
+<!-- Modals -->
+<div class="ovr" id="oAssign"><div class="modal" onclick="event.stopPropagation()">
+  <div class="drag"></div><h2>Ажилчид оноох</h2>
+  <div class="fg"><label>Ажил олгогч</label><select id="aEmpSel"></select></div>
+  <div class="fg"><label>Ажилчид</label><div class="wsl" id="wslEl"></div></div>
+  <div class="mact"><button class="btn bo" onclick="co('oAssign')">Цуцлах</button><button class="btn br" onclick="saveAssign()">Хадгалах</button></div>
+</div></div>
+
+<div class="ovr" id="oEmp"><div class="modal" onclick="event.stopPropagation()">
+  <div class="drag"></div><h2 id="empTtl">Ажил олгогч нэмэх</h2>
+  <div class="fg"><label>Нэр</label><input type="text" id="eName" placeholder="Нэр"></div>
+  <div class="fg"><label>Утас</label><input type="tel" id="ePhone" placeholder="99001122"></div>
+  <div class="fg"><label>Өнгө</label><div class="crow" id="eCols"></div></div>
+  <div class="mact"><button class="btn bo" onclick="co('oEmp')">Цуцлах</button><button class="btn br" onclick="saveEmp()">Хадгалах</button></div>
+</div></div>
+
+<div class="ovr" id="oWrk"><div class="modal" onclick="event.stopPropagation()">
+  <div class="drag"></div><h2 id="wrkTtl">Ажилтан нэмэх</h2>
+  <div class="fg"><label>Нэр</label><input type="text" id="wName" placeholder="Нэр"></div>
+  <div class="fg"><label>Утас</label><input type="tel" id="wPhone" placeholder="99001122"></div>
+  <div class="fg"><label>Тэмдэглэл</label><input type="text" id="wNote" placeholder="Мэргэжил..."></div>
+  <div class="mact"><button class="btn bo" onclick="co('oWrk')">Цуцлах</button><button class="btn br" onclick="saveWrk()">Хадгалах</button></div>
+</div></div>
+
+<div class="ovr" id="oShare"><div class="modal" onclick="event.stopPropagation()">
+  <div class="drag"></div><h2 id="shareName">Хуваарь</h2>
+  <p style="font-size:12px;color:var(--mut);margin-bottom:10px">Энэ сарын хуваарийг доор харуулав. Илгээх товч дарна уу.</p>
+  <div id="shareText" style="background:var(--bg);border-radius:10px;padding:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;border:1px solid var(--bdr);max-height:260px;overflow-y:auto;color:var(--txt)"></div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="btn bo" style="flex:1;justify-content:center" onclick="doCopy()">📋 Хуулах</button>
+    <button class="btn br" style="flex:1;justify-content:center" onclick="doShare()">📤 Илгээх</button>
+  </div>
+  <div class="mact"><button class="btn bo" onclick="co('oShare')" style="width:100%;justify-content:center">Хаах</button></div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+var C=["#e74c3c","#e67e22","#f39c12","#16a34a","#0891b2","#2563eb","#7c3aed","#db2777","#92400e","#475569"];
+var WC="#2563eb";
+var MN=["1-р сар","2-р сар","3-р сар","4-р сар","5-р сар","6-р сар","7-р сар","8-р сар","9-р сар","10-р сар","11-р сар","12-р сар"];
+var DOW=["Ня","Да","Мя","Лх","Пү","Ба","Бя"];
+
+function g(i){return document.getElementById(i)}
+function gv(i){var e=g(i);return e?e.value:""}
+function sv(i,v){var e=g(i);if(e)e.value=String(v==null?"":v)}
+function pad(n){return n<10?"0"+n:""+n}
+function fD(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function toDay(){return fD(new Date())}
+function ini(n){return(n||"?").split(/\s+/).map(function(w){return w[0]||""}).join("").substring(0,2).toUpperCase()}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function fi(a,id){for(var i=0;i<a.length;i++){if(a[i].id===id)return a[i]}return null}
+function qsa(sel){return Array.prototype.slice.call(document.querySelectorAll(sel))}
+function toast(m){var t=g("toast");t.textContent=m;t.style.display="block";setTimeout(function(){t.style.display="none"},2200)}
+
+// Storage - memory only (works on file://)
+var _mem={};
+function dbSave(){
+  var s=JSON.stringify(db);
+  _mem.db=s;
+  try{localStorage.setItem("sdb9",s)}catch(e){}
+}
+function dbLoad(){
+  if(_mem.db){try{return JSON.parse(_mem.db)}catch(e){}}
+  try{var s=localStorage.getItem("sdb9");if(s)return JSON.parse(s)}catch(e){}
+  return null;
+}
+
+var db=dbLoad();
+if(!db||!db.employers){db={employers:[],workers:[],schedules:{}}}
+if(!db.schedules)db.schedules={};
+
+// Demo data
+if(!db.employers.length){
+  db.employers=[
+    {id:"e1",name:"АПУ ХХК",phone:"99001100",color:"#e74c3c"},
+    {id:"e2",name:"Монгол Шилэн",phone:"88223344",color:"#2563eb"}
+  ];
+  db.workers=[
+    {id:"w1",name:"Болд Дорж",phone:"99112233",note:"Жолооч"},
+    {id:"w2",name:"Оюун Цэцэг",phone:"88334455",note:"Нярав"},
+    {id:"w3",name:"Мөнх Баяр",phone:"99556677",note:"Ажилчин"},
+    {id:"w4",name:"Энхжин",phone:"88667788",note:""},
+    {id:"w5",name:"Ганбаяр",phone:"99778899",note:"Техникч"}
+  ];
+  var t0=toDay();
+  db.schedules[t0]=[
+    {empId:"e1",workerIds:["w1","w2","w3"]},
+    {empId:"e2",workerIds:["w4","w5"]}
+  ];
+  dbSave();
+}
+
+// Check worker public view via URL hash
+var wvY=new Date().getFullYear(),wvM=new Date().getMonth(),pubWid=null;
+function initPub(){
+  var h=window.location.hash;
+  if(h&&h.indexOf("w=")>=0){
+    pubWid=h.replace(/.*#w=/,"").split("&")[0];
+    pubWid=decodeURIComponent(pubWid);
+    g("APP").style.display="none";
+    g("WV").style.display="block";
+    renderWV();
+    return true;
+  }
+  return false;
+}
+function renderWV(){
+  var w=fi(db.workers,pubWid);
+  if(!w){
+    g("wvName").textContent="Олдсонгүй";
+    g("wvDays").innerHTML='<div class="wvempty">Ажилтан олдсонгүй</div>';
+    return;
+  }
+  g("wvName").textContent=w.name;
+  g("wvLbl").textContent=wvY+" оны "+MN[wvM];
+  var td=toDay(),dim=new Date(wvY,wvM+1,0).getDate(),items=[];
+  for(var d=1;d<=dim;d++){
+    var ds=wvY+"-"+pad(wvM+1)+"-"+pad(d);
+    var sc=db.schedules[ds]||[];
+    for(var i=0;i<sc.length;i++){
+      if(sc[i].workerIds.indexOf(pubWid)>=0){
+        items.push({ds:ds,d:d,emp:fi(db.employers,sc[i].empId)});
+        break;
+      }
+    }
+  }
+  if(!items.length){g("wvDays").innerHTML='<div class="wvempty">📋 Энэ сард хуваарь алга</div>';return;}
+  var h="";
+  for(var i=0;i<items.length;i++){
+    var x=items[i],isT=(x.ds===td);
+    var dw=DOW[new Date(x.ds).getDay()];
+    h+='<div class="wvday'+(isT?" tod":"")+'">';
+    h+='<div><div class="wvdate">'+x.d+'</div><div class="wvdow">'+dw+'</div></div>';
+    h+='<div style="flex:1">';
+    if(x.emp)h+='<div style="font-size:13px;font-weight:600"><span class="wvedot" style="background:'+x.emp.color+'"></span>'+esc(x.emp.name)+'</div>';
+    h+='</div>';
+    if(isT)h+='<div style="font-size:10px;font-weight:700;color:var(--acc)">Өнөөдөр</div>';
+    h+='</div>';
+  }
+  g("wvDays").innerHTML=h;
+}
+function wvc(dir){wvM+=dir;if(wvM>11){wvM=0;wvY++}if(wvM<0){wvM=11;wvY--}renderWV()}
+
+// State
+var calY=new Date().getFullYear(),calM=new Date().getMonth(),selD=null;
+var eid=null,wid=null,sc=C[0],aEid=null,aIdx=null,sw=[];
+var curShareUrl="";
+
+function sp(p,btn){
+  qsa(".pg").forEach(function(x){x.classList.remove("on")});
+  qsa(".nb").forEach(function(x){x.classList.remove("on")});
+  g(p+"Page").classList.add("on");
+  if(btn)btn.classList.add("on");
+  if(p==="settings")renderSettings();
+}
+
+// Calendar
+function renderCal(){
+  g("calLbl").textContent=calY+" / "+MN[calM];
+  var t=toDay();
+  var first=new Date(calY,calM,1);
+  var dow=(first.getDay()+6)%7;
+  var dim=new Date(calY,calM+1,0).getDate();
+  var dip=new Date(calY,calM,0).getDate();
+  var h="";
+  for(var i=0;i<dow;i++){
+    var d=dip-dow+1+i;
+    h+=cH(d,fD(new Date(calY,calM-1,d)),true,t);
+  }
+  for(var d=1;d<=dim;d++){
+    h+=cH(d,fD(new Date(calY,calM,d)),false,t);
+  }
+  var rem=(dow+dim)%7===0?0:7-(dow+dim)%7;
+  for(var i=1;i<=rem;i++){
+    h+=cH(i,fD(new Date(calY,calM+1,i)),true,t);
+  }
+  g("cdays").innerHTML=h;
+  renderStats();
+}
+function cH(d,ds,om,t){
+  var s=db.schedules[ds]||[];
+  var dayOfWeek=new Date(ds).getDay(); // 0=Sun,6=Sat
+  var isWk=(dayOfWeek===0||dayOfWeek===6);
+  var cl="cc"+(om?" om":"")+(isWk?" wk":"")+(ds===t?" td":"")+(ds===selD?" sl":"");
+  var tg="";
+  for(var i=0;i<Math.min(s.length,2);i++){
+    var e=fi(db.employers,s[i].empId);
+    if(e)tg+='<div class="ctag" style="background:'+e.color+'">'+esc(e.name)+" ("+s[i].workerIds.length+")</div>";
+  }
+  if(s.length>2)tg+='<div class="cmore">+'+(s.length-2)+"</div>";
+  return '<div class="'+cl+'" onclick="selDay(\''+ds+'\')"><div class="cnum">'+d+'</div><div class="ctags">'+tg+"</div></div>";
+}
+function cm(dir){
+  calM+=dir;
+  if(calM>11){calM=0;calY++}
+  if(calM<0){calM=11;calY--}
+  renderCal();
+}
+function selDay(ds){
+  selD=ds;
+  renderCal();
+  g("dpWrap").style.display="block";
+  var p=ds.split("-");
+  g("dpt").textContent=p[0]+" оны "+MN[parseInt(p[1])-1]+" "+parseInt(p[2]);
+  renderDP();
+  g("dpWrap").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function renderDP(){
+  var s=db.schedules[selD]||[];
+  var el=g("alist");
+  if(!s.length){el.innerHTML='<div class="eday">📋 Энэ өдөр ажилчин оноогдоогүй байна</div>';return;}
+  var h="";
+  for(var ai=0;ai<s.length;ai++){
+    var a=s[ai];
+    var emp=fi(db.employers,a.empId);
+    if(!emp)continue;
+    var pills="";
+    for(var wi=0;wi<a.workerIds.length;wi++){
+      var w=fi(db.workers,a.workerIds[wi]);
+      if(!w)continue;
+      pills+='<div class="wpill">';
+      pills+='<div class="wav" style="background:'+WC+'">'+ini(w.name)+"</div> ";
+      pills+=esc(w.name);
+      pills+=' <button class="wrm" onclick="rmW(\''+selD+'\','+ai+',\''+a.workerIds[wi]+'\')">✕</button>';
+      pills+="</div>";
+    }
+    h+='<div class="arow">';
+    h+='<div class="adot" style="background:'+emp.color+'"></div>';
+    h+='<div class="aname" style="color:'+emp.color+'">'+esc(emp.name)+"</div>";
+    h+='<div class="awrks">'+pills+"</div>";
+    h+='<button class="aadd" onclick="openAssignFor(\''+emp.id+'\','+ai+')">＋</button>';
+    h+='<button class="adel" onclick="rmA(\''+selD+'\','+ai+')">✕</button>';
+    h+="</div>";
+  }
+  el.innerHTML=h;
+}
+function rmW(ds,ai,id){
+  var s=db.schedules[ds];
+  if(!s||!s[ai])return;
+  s[ai].workerIds=s[ai].workerIds.filter(function(x){return x!==id});
+  if(!s[ai].workerIds.length)s.splice(ai,1);
+  if(!s.length)delete db.schedules[ds];
+  dbSave();renderDP();renderCal();
+}
+function rmA(ds,ai){
+  var s=db.schedules[ds];
+  if(!s)return;
+  s.splice(ai,1);
+  if(!s.length)delete db.schedules[ds];
+  dbSave();renderDP();renderCal();
+}
+
+// Assign modal
+function openAssign(){
+  if(!db.employers.length){toast("Эхлээд ажил олгогч нэмнэ үү");return}
+  if(!db.workers.length){toast("Эхлээд ажилтан нэмнэ үү");return}
+  aEid=null;aIdx=null;sw=[];buildAssign(null);
+  g("oAssign").classList.add("on");
+}
+function openAssignFor(empId,idx){
+  aEid=empId;aIdx=idx;
+  var s=db.schedules[selD]||[];
+  sw=s[idx]?s[idx].workerIds.slice():[];
+  buildAssign(empId);
+  g("oAssign").classList.add("on");
+}
+function buildAssign(preId){
+  var sel=g("aEmpSel"),h="";
+  for(var i=0;i<db.employers.length;i++){
+    var e=db.employers[i];
+    h+='<option value="'+e.id+'"'+(e.id===preId?" selected":"")+">"+esc(e.name)+"</option>";
+  }
+  sel.innerHTML=h;
+  sel.disabled=!!preId;
+  renderWSL();
+}
+function renderWSL(){
+  var el=g("wslEl");
+  if(!db.workers.length){el.innerHTML='<div style="padding:12px;color:var(--mut)">Ажилтан байхгүй</div>';return}
+  var h="";
+  for(var i=0;i<db.workers.length;i++){
+    var w=db.workers[i];
+    var chk=hwf(w.id);
+    h+='<div class="wi'+(chk?" ck":"")+'" onclick="togW(\''+w.id+'\',this)">';
+    h+='<div class="wav2" style="background:'+WC+'">'+ini(w.name)+"</div>";
+    h+='<div class="wnm">'+esc(w.name)+"</div>";
+    if(w.phone)h+='<div class="wph">'+esc(w.phone)+"</div>";
+    h+='<div class="wbox">'+(chk?"✓":"")+"</div>";
+    h+="</div>";
+  }
+  el.innerHTML=h;
+}
+function hwf(id){for(var j=0;j<sw.length;j++){if(sw[j]===id)return true}return false}
+function togW(id,el){
+  if(hwf(id)){
+    sw=sw.filter(function(x){return x!==id});
+    el.classList.remove("ck");
+    el.querySelector(".wbox").textContent="";
+  } else {
+    sw.push(id);
+    el.classList.add("ck");
+    el.querySelector(".wbox").textContent="✓";
+  }
+}
+function saveAssign(){
+  if(!selD){toast("Өдөр сонгоно уу");return}
+  var empId=aEid||gv("aEmpSel");
+  if(!empId){toast("Ажил олгогч сонгоно уу");return}
+  if(!sw.length){toast("Хамгийн багадаа 1 ажилтан сонгоно уу");return}
+  if(!db.schedules[selD])db.schedules[selD]=[];
+  var s=db.schedules[selD],ex=-1;
+  if(aIdx!==null){
+    s[aIdx].workerIds=sw.slice();
+  } else {
+    for(var i=0;i<s.length;i++){if(s[i].empId===empId){ex=i;break}}
+    if(ex>=0){
+      var m=s[ex].workerIds.slice();
+      for(var i=0;i<sw.length;i++){if(m.indexOf(sw[i])<0)m.push(sw[i])}
+      s[ex].workerIds=m;
+    } else {
+      s.push({empId:empId,workerIds:sw.slice()});
+    }
+  }
+  dbSave();co("oAssign");renderDP();renderCal();
+}
+
+// Settings
+function renderSettings(){
+  var el=g("empList");
+  if(!db.employers.length){el.innerHTML='<div class="el">Ажил олгогч байхгүй</div>'}
+  else{
+    var h="";
+    for(var i=0;i<db.employers.length;i++){
+      var e=db.employers[i];
+      h+='<div class="pr">';
+      h+='<div class="pav" style="background:'+e.color+'">'+ini(e.name)+"</div>";
+      h+='<div><div class="pnm">'+esc(e.name)+'</div><div class="pdt">📞 '+esc(e.phone||"—")+"</div></div>";
+      h+='<div class="pac"><button class="ib" onclick="openEmp(\''+e.id+'\')">✎</button><button class="ib" onclick="delEmp(\''+e.id+'\')">✕</button></div>';
+      h+="</div>";
+    }
+    el.innerHTML=h;
+  }
+  var wl=g("wrkList");
+  if(!db.workers.length){wl.innerHTML='<div class="el">Ажилтан байхгүй</div>'}
+  else{
+    var h="";
+    for(var i=0;i<db.workers.length;i++){
+      var w=db.workers[i];
+      h+='<div class="pr">';
+      h+='<div class="pav" style="background:'+WC+'">'+ini(w.name)+"</div>";
+      h+='<div><div class="pnm">'+esc(w.name)+'</div><div class="pdt">📞 '+esc(w.phone||"—")+(w.note?" · "+esc(w.note):"")+"</div></div>";
+      h+='<div class="pac"><button class="ib" onclick="openWrk(\''+w.id+'\')">✎</button><button class="ib" onclick="delWrk(\''+w.id+'\')">✕</button></div>';
+      h+="</div>";
+    }
+    wl.innerHTML=h;
+  }
+  // Share links
+  var sl=g("shareList");
+  if(!db.workers.length){sl.innerHTML='<div style="color:var(--mut);font-size:13px">Ажилтан байхгүй</div>'}
+  else{
+    var h="";
+    for(var i=0;i<db.workers.length;i++){
+      var w=db.workers[i];
+      h+='<div class="shr">';
+      h+='<div class="pav" style="background:'+WC+';width:32px;height:32px;border-radius:8px;font-size:11px;flex-shrink:0">'+ini(w.name)+"</div>";
+      h+='<div style="flex:1"><div class="pnm" style="font-size:13px">'+esc(w.name)+"</div></div>";
+      h+='<button class="slbtn" onclick="showShare(\''+w.id+'\')">🔗 Холбоос</button>';
+      h+="</div>";
+    }
+    sl.innerHTML=h;
+  }
+}
+
+
+function getWorkerScheduleText(wid_){
+  var w=fi(db.workers,wid_);
+  if(!w)return "";
+  var now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  var dim=new Date(y,m+1,0).getDate();
+  var DOW2=["Ням","Дав","Мяг","Лха","Пүр","Баа","Бям"];
+  var lines=[];
+  lines.push("📅 "+w.name+" — "+y+" оны "+MN[m]+" сарын хуваарь");
+  lines.push("──────────────────");
+  var found=false;
+  for(var d=1;d<=dim;d++){
+    var ds=y+"-"+pad(m+1)+"-"+pad(d);
+    var sc=db.schedules[ds]||[];
+    for(var i=0;i<sc.length;i++){
+      if(sc[i].workerIds.indexOf(wid_)>=0){
+        var emp=fi(db.employers,sc[i].empId);
+        var dow=DOW2[new Date(ds).getDay()];
+        var isWk=(new Date(ds).getDay()===0||new Date(ds).getDay()===6);
+        lines.push((isWk?"🔵":"✅")+" "+(m+1)+"/"+d+" "+dow+" — "+(emp?emp.name:""));
+        found=true;break;
+      }
+    }
+  }
+  if(!found)lines.push("Энэ сард хуваарь алга байна.");
+  return lines.join("\n");
+}
+
+function showShare(wid_){
+  var w=fi(db.workers,wid_);
+  curShareUrl=getWorkerScheduleText(wid_);
+  g("shareName").textContent=(w?w.name:"")+" — Хуваарь";
+  g("shareText").textContent=curShareUrl;
+  g("oShare").classList.add("on");
+}
+function doCopy(){
+  var txt=curShareUrl;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){toast("Хуулагдлаа! Вибер/WhatsApp-д буулгана уу")}).catch(function(){fbCopy(txt)});
+  } else {fbCopy(txt)}
+}
+function doShare(){
+  if(navigator.share){
+    navigator.share({title:"Ажлын хуваарь",text:curShareUrl}).catch(function(){});
+  } else {
+    window.open("https://wa.me/?text="+encodeURIComponent(curShareUrl),"_blank");
+  }
+}
+function fbCopy(txt){
+  var ta=document.createElement("textarea");
+  ta.value=txt;ta.style.cssText="position:fixed;opacity:0;top:0;left:0";
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand("copy");toast("Хуулагдлаа!")}catch(e){toast("Гараар сонгоод хуулна уу")}
+  document.body.removeChild(ta);
+}
+
+// Employer modal
+function openEmp(id){
+  eid=id||null;
+  var e=id?fi(db.employers,id):null;
+  g("empTtl").textContent=e?"Засах":"Ажил олгогч нэмэх";
+  sv("eName",e?e.name:"");sv("ePhone",e?e.phone:"");
+  sc=e?e.color:C[0];
+  var h="";
+  for(var i=0;i<C.length;i++){
+    h+='<div class="csw'+(C[i]===sc?" sl":"")+'" style="background:'+C[i]+'" onclick="pC(\''+C[i]+'\',this)"></div>';
+  }
+  g("eCols").innerHTML=h;
+  g("oEmp").classList.add("on");
+}
+function pC(c,el){
+  sc=c;
+  qsa(".csw").forEach(function(s){s.classList.remove("sl")});
+  el.classList.add("sl");
+}
+function saveEmp(){
+  var name=gv("eName").trim();
+  if(!name){toast("Нэрийг оруулна уу");return}
+  var data={name:name,phone:gv("ePhone").trim(),color:sc};
+  if(eid){
+    for(var i=0;i<db.employers.length;i++){
+      if(db.employers[i].id===eid){db.employers[i]=Object.assign({},db.employers[i],data);break}
+    }
+  } else {data.id="e"+Date.now();db.employers.push(data)}
+  dbSave();co("oEmp");renderSettings();renderCal();
+}
+function delEmp(id){
+  if(!confirm("Устгах уу?"))return;
+  db.employers=db.employers.filter(function(e){return e.id!==id});
+  var ks=Object.keys(db.schedules);
+  for(var k=0;k<ks.length;k++){
+    db.schedules[ks[k]]=db.schedules[ks[k]].filter(function(a){return a.empId!==id});
+    if(!db.schedules[ks[k]].length)delete db.schedules[ks[k]];
+  }
+  dbSave();renderSettings();renderCal();if(selD)renderDP();
+}
+
+// Worker modal
+function openWrk(id){
+  wid=id||null;
+  var w=id?fi(db.workers,id):null;
+  g("wrkTtl").textContent=w?"Засах":"Ажилтан нэмэх";
+  sv("wName",w?w.name:"");sv("wPhone",w?w.phone:"");sv("wNote",w?w.note:"");
+  g("oWrk").classList.add("on");
+}
+function saveWrk(){
+  var name=gv("wName").trim();
+  if(!name){toast("Нэрийг оруулна уу");return}
+  var data={name:name,phone:gv("wPhone").trim(),note:gv("wNote").trim()};
+  if(wid){
+    for(var i=0;i<db.workers.length;i++){
+      if(db.workers[i].id===wid){db.workers[i]=Object.assign({},db.workers[i],data);break}
+    }
+  } else {data.id="w"+Date.now();db.workers.push(data)}
+  dbSave();co("oWrk");renderSettings();
+}
+function delWrk(id){
+  if(!confirm("Устгах уу?"))return;
+  db.workers=db.workers.filter(function(w){return w.id!==id});
+  var ks=Object.keys(db.schedules);
+  for(var k=0;k<ks.length;k++){
+    for(var i=0;i<db.schedules[ks[k]].length;i++){
+      db.schedules[ks[k]][i].workerIds=db.schedules[ks[k]][i].workerIds.filter(function(x){return x!==id});
+    }
+    db.schedules[ks[k]]=db.schedules[ks[k]].filter(function(a){return a.workerIds.length>0});
+    if(!db.schedules[ks[k]].length)delete db.schedules[ks[k]];
+  }
+  dbSave();renderSettings();if(selD)renderDP();
+}
+
+function renderStats(){
+  // Update employer filter dropdown
+  var sel=g("statEmpSel");
+  if(sel){
+    var curVal=sel.value;
+    var h='<option value="">Бүгд</option>';
+    for(var i=0;i<db.employers.length;i++){
+      h+='<option value="'+db.employers[i].id+'"'+(db.employers[i].id===curVal?" selected":"")+">"+esc(db.employers[i].name)+"</option>";
+    }
+    sel.innerHTML=h;
+  }
+  var filterEmp=sel?sel.value:"";
+  // Count days each worker worked this month
+  var dim=new Date(calY,calM+1,0).getDate();
+  var counts={};
+  for(var i=0;i<db.workers.length;i++) counts[db.workers[i].id]=0;
+  for(var d=1;d<=dim;d++){
+    var ds=calY+"-"+pad(calM+1)+"-"+pad(d);
+    var sc=db.schedules[ds]||[];
+    for(var i=0;i<sc.length;i++){
+      if(filterEmp&&sc[i].empId!==filterEmp) continue;
+      for(var j=0;j<sc[i].workerIds.length;j++){
+        var wid_=sc[i].workerIds[j];
+        if(counts[wid_]!==undefined) counts[wid_]++;
+      }
+    }
+  }
+  // Sort by count desc
+  var sorted=db.workers.slice().sort(function(a,b){return (counts[b.id]||0)-(counts[a.id]||0)});
+  var maxC=0;
+  for(var i=0;i<sorted.length;i++){if((counts[sorted[i].id]||0)>maxC)maxC=counts[sorted[i].id]||0}
+
+  var el=g("statList");
+  if(!db.workers.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--mut);font-size:13px">Ажилтан байхгүй</div>';return}
+  var h="";
+  for(var i=0;i<sorted.length;i++){
+    var w=sorted[i];
+    var cnt=counts[w.id]||0;
+    var pct=maxC>0?Math.round(cnt/maxC*100):0;
+    h+='<div class="stat-row">';
+    h+='<div class="stat-av" style="background:'+WC+'">'+ini(w.name)+"</div>";
+    h+='<div class="stat-nm">'+esc(w.name)+"</div>";
+    h+='<div class="stat-bar-wrap"><div class="stat-bar" style="width:'+pct+'%"></div></div>';
+    h+='<div class="stat-cnt">'+cnt+' өдөр</div>';
+    h+="</div>";
+  }
+  el.innerHTML=h;
+}
+
+// Overlay
+function co(id){var el=g(id);if(el)el.classList.remove("on")}
+var OVRS=["oAssign","oEmp","oWrk","oShare"];
+for(var OI=0;OI<OVRS.length;OI++){
+  (function(id){
+    var el=g(id);
+    if(el)el.addEventListener("click",function(ev){if(ev.target===el)co(id)});
+  })(OVRS[OI]);
+}
+
+// Init
+window.onload=function(){
+  try{
+    if(!initPub()){
+      g("APP").style.display="block";
+      renderCal();
+      selDay(toDay());
+    }
+  }catch(err){
+    g("APP").style.display="block";
+    try{renderCal()}catch(e){}
+    try{selDay(toDay())}catch(e){}
+  }
+};
+</script>
+</body>
+</html>
