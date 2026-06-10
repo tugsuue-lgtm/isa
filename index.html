@@ -935,7 +935,7 @@ setInterval(_patchTX, 100);
 <!-- Firebase SDKs -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged, updatePassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -954,6 +954,8 @@ const fbApp = initializeApp(firebaseConfig);
 // App Check disabled
 
 const fbAuth = getAuth(fbApp);
+// Set persistence to LOCAL so login survives app close (Remember me)
+setPersistence(fbAuth, browserLocalPersistence).catch(function(e){ console.warn("persistence:", e); });
 const fbDb = getFirestore(fbApp);
 window._fbDbInst = fbDb;
 
@@ -1107,7 +1109,11 @@ window.fbLoadCfg = async function() {
 window.fbRegister = async function(email, password) {
   return await createUserWithEmailAndPassword(fbAuth, email, password);
 };
-window.fbLogin = async function(email, password) {
+window.fbLogin = async function(email, password, remember) {
+  // remember=true → LOCAL (survives close), false → SESSION (until tab close)
+  try {
+    await setPersistence(fbAuth, remember === false ? browserSessionPersistence : browserLocalPersistence);
+  } catch(e){ console.warn("persistence:", e); }
   return await signInWithEmailAndPassword(fbAuth, email, password);
 };
 window.fbLogout = async function() {
@@ -1221,7 +1227,7 @@ var a0_0x106990=a0_0x3ce6;(function(_0x9169b8,_0x4087e4){var _0x58dbb9=a0_0x3ce6
 
   // Admin шалгах
   if(email==="machida.admin@gmail.com"){
-    window.fbLogin(email,p).then(async function(cred){
+    window.fbLogin(email,p,(g("lsRem")?g("lsRem").checked:true)).then(async function(cred){
       var uid=cred.user.uid;
       cu={name:"admin",role:"admin",uid:uid,exp:"2099-12-31",plan:"admin",active:true};
       db={employers:[],workers:[],schedules:{},cards:{}};
@@ -1242,7 +1248,7 @@ var a0_0x106990=a0_0x3ce6;(function(_0x9169b8,_0x4087e4){var _0x58dbb9=a0_0x3ce6
   }
 
   // Хэрэглэгч - шууд email-ээр нэвтрэх
-  window.fbLogin(email,p).then(async function(cred){
+  window.fbLogin(email,p,(g("lsRem")?g("lsRem").checked:true)).then(async function(cred){
     var uid=cred.user.uid;
     var profile=await window.fbLoadProfile(uid);
     if(!profile){
