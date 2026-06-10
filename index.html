@@ -2104,44 +2104,49 @@ setTimeout(checkBellDot, 2000);
 
 // ═══ OVERRIDE NAV & FAB ═══
 
-// Hide chat FAB permanently via CSS (accessible via side menu instead)
+// Hide chat FAB permanently
 (function(){
   var style = document.createElement('style');
   style.textContent = '#chatFabWrap{display:none!important}';
   document.head.appendChild(style);
 })();
 
-// Nav button actions using obfuscated functions
+// sp() is the obfuscated page switcher: sp('cal'), sp('set'), sp('dash')
+// Use it directly for reliable navigation
+
 function navGoHome(){
-  // Trigger nb_cal click - obfuscated code handles page switch + renderCal()
-  var btn = document.getElementById('nb_cal');
-  if(btn){ btn.click(); return; }
+  if(typeof sp==='function'){ sp('cal'); return; }
   if(typeof renderCal==='function') renderCal();
 }
 
 function navGoEmp(){
-  // Go to employer/settings page
-  var btn = document.getElementById('nb_set') || document.getElementById('nb_adminSet');
-  if(btn){ btn.click(); return; }
+  if(typeof sp==='function'){ sp('set'); return; }
   if(typeof renderSet==='function') renderSet();
 }
 
 function navAddWorker(){
-  // Show worker list (ажилчдын жагсаалт)
   if(typeof renderWrkList==='function'){ renderWrkList(); return; }
-  // Fallback
-  var btn = document.getElementById('nb_emp');
-  if(btn) btn.click();
+  if(typeof sp==='function') sp('set');
 }
 
-// Rebuild custom nav HTML
+// Hide original nav buttons, inject our custom 3-button nav
 function _rebuildCustomNav(){
   var nav = document.getElementById('mainNav');
   if(!nav) return;
-  // Check if already our custom nav
-  if(nav.querySelector('.nb-logo-btn')) return;
+  if(nav.querySelector('.nb-logo-btn')) return; // already done
+
+  // Hide original buttons with CSS
+  var style = document.getElementById('_navOverrideStyle');
+  if(!style){
+    style = document.createElement('style');
+    style.id = '_navOverrideStyle';
+    style.textContent = '#mainNav .nb{display:none!important} #mainNav{justify-content:space-around!important}';
+    document.head.appendChild(style);
+  }
+
+  // Clear and inject our 3-button nav
   nav.innerHTML = ''
-    + '<div class="nb-side-btn" onclick="navGoEmp()" id="nb_emp_btn">'
+    + '<div class="nb-side-btn" onclick="navGoEmp()">'
     + '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
     + '<rect x="2" y="7" width="20" height="14" rx="2"/>'
     + '<path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>'
@@ -2155,7 +2160,7 @@ function _rebuildCustomNav(){
     + '<div style="border-radius:4px;background:#C84B2F"></div>'
     + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:2px;background:#C84B2F;opacity:.6"></div>'
     + '</div></div></div>'
-    + '<div class="nb-side-btn" onclick="navAddWorker()" id="nb_add_btn">'
+    + '<div class="nb-side-btn" onclick="navAddWorker()">'
     + '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
     + '<path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>'
     + '<circle cx="9" cy="7" r="4"/>'
@@ -2163,11 +2168,9 @@ function _rebuildCustomNav(){
     + '<line x1="22" y1="11" x2="16" y2="11"/>'
     + '</svg></div>';
 }
-
-// Run after buildNav completes
-setInterval(_rebuildCustomNav, 500);
-setTimeout(_rebuildCustomNav, 300);
-setTimeout(_rebuildCustomNav, 1000);
+setTimeout(_rebuildCustomNav, 800);
+setTimeout(_rebuildCustomNav, 1500);
+setInterval(_rebuildCustomNav, 2000);
 
 // openEmpList - open assign modal or employer list
 function openEmpList(){
