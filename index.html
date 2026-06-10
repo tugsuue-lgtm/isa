@@ -646,7 +646,7 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',-apple-system,B
 #adminCnt > input[type="text"] { display: none !important; }
 
 .smi{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;transition:background .15s}
-.smi:active{background:rgba(245,239,230,.06)}
+.smi:active{background:rgba(200,75,47,.12)}
 .smi-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .smi-tx{display:flex;flex-direction:column}
 .smi-t{font-size:13px;font-weight:500;color:#F5EFE6}
@@ -1912,17 +1912,16 @@ function navWorkers(){
 function _enhanceNav(){
   var nav = document.getElementById('mainNav');
   if(!nav) return;
-  if(nav.dataset.enhanced === '1') return;
   if(nav.children.length === 0) return;
   var isAdminNav = nav.querySelector('#nb_dash') || nav.querySelector('#nb_admin');
   if(isAdminNav) return;
-  
-  nav.dataset.enhanced = '1';
+  // Already our custom nav? skip
+  if(nav.querySelector('.nb-custom-center')) return;
   nav.innerHTML = ''
     + '<div onclick="navEmployers()" style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px;opacity:.85;cursor:pointer">'
     + '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>'
     + '</div>'
-    + '<div onclick="if(typeof sp===\'function\')sp(\'cal\')" style="flex:0 0 auto;margin-top:-18px;cursor:pointer">'
+    + '<div class="nb-custom-center" onclick="if(typeof sp===\'function\')sp(\'cal\')" style="flex:0 0 auto;margin-top:-18px;cursor:pointer">'
     + '<div style="width:52px;height:52px;background:#1A110A;border-radius:15px;border:3px solid var(--bg,#FAF7F2);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.5)">'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;width:26px;height:26px;position:relative">'
     + '<div style="border-radius:3px;background:#C84B2F"></div>'
@@ -1948,32 +1947,63 @@ setTimeout(_enhanceNav, 400);
 
 
 // ═══ CUSTOM SIDE MENU ═══
+function _showInfoModal(title, rows){
+  var existing=document.getElementById('infoModal'); if(existing) existing.remove();
+  var m=document.createElement('div'); m.id='infoModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  m.onclick=function(e){ if(e.target===m) m.remove(); };
+  var rowsHtml=rows.map(function(r){
+    return '<div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--bdr,#eee)">'
+      +'<span style="font-size:12px;color:var(--mut,#888)">'+r[0]+'</span>'
+      +'<span style="font-size:13px;font-weight:500;color:var(--txt,#2C2416)">'+r[1]+'</span></div>';
+  }).join('');
+  m.innerHTML='<div style="background:var(--sur,#fff);border-radius:16px;padding:22px;max-width:320px;width:100%" onclick="event.stopPropagation()">'
+    +'<h3 style="font-size:16px;font-weight:600;margin:0 0 14px;color:var(--txt,#2C2416)">'+title+'</h3>'
+    +rowsHtml
+    +'<button onclick="document.getElementById(\'infoModal\').remove()" style="width:100%;padding:11px;border:none;border-radius:10px;background:#C84B2F;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:16px">'+(lang==='kr'?'닫기':lang==='en'?'Close':'Хаах')+'</button>'
+    +'</div>';
+  document.body.appendChild(m);
+}
 function showProfile(){
   closeSideMenu();
-  var u = cu || {};
-  var msg = (lang==='kr'?'프로필\n\n이름: ':lang==='en'?'Profile\n\nName: ':'Профайл\n\nНэр: ') + (u.username||'-')
-    + (lang==='kr'?'\n이메일: ':lang==='en'?'\nEmail: ':'\nИ-мэйл: ') + (u.email||'-')
-    + (lang==='kr'?'\n전화: ':lang==='en'?'\nPhone: ':'\nУтас: ') + (u.phone||'-');
-  alert(msg);
+  var u=cu||{};
+  var L=function(mn,kr,en){return lang==='kr'?kr:lang==='en'?en:mn;};
+  _showInfoModal(L('Профайл','프로필','Profile'),[
+    [L('Нэр','이름','Name'), u.username||'-'],
+    [L('И-мэйл','이메일','Email'), u.email||'-'],
+    [L('Утас','전화','Phone'), u.phone||'-']
+  ]);
 }
 function showPlan(){
   closeSideMenu();
-  var u = cu || {};
-  var d = u.exp ? dLeft(u.exp) : 0;
-  var plans = {trial:'Туршилт',basic:'Үндсэн',pro:'Про'};
-  var msg = (lang==='kr'?'권한 정보\n\n':lang==='en'?'Plan Info\n\n':'Эрхийн мэдээлэл\n\n')
-    + (lang==='kr'?'요금제: ':lang==='en'?'Plan: ':'Төлөвлөгөө: ') + (plans[u.plan]||'Туршилт')
-    + (lang==='kr'?'\n남은 일수: ':lang==='en'?'\nDays left: ':'\nҮлдсэн өдөр: ') + (d>0?d:0)
-    + (lang==='kr'?'\n만료일: ':lang==='en'?'\nExpires: ':'\nДуусах огноо: ') + (u.exp||'-');
-  alert(msg);
+  var u=cu||{};
+  var d=u.exp?dLeft(u.exp):0;
+  var L=function(mn,kr,en){return lang==='kr'?kr:lang==='en'?en:mn;};
+  var plans={trial:L('Туршилт','체험','Trial'),basic:L('Үндсэн','기본','Basic'),pro:L('Про','프로','Pro')};
+  _showInfoModal(L('Эрхийн мэдээлэл','권한 정보','Plan Info'),[
+    [L('Төлөвлөгөө','요금제','Plan'), plans[u.plan]||plans.trial],
+    [L('Үлдсэн өдөр','남은 일수','Days left'), (d>0?d:0)+''],
+    [L('Дуусах огноо','만료일','Expires'), u.exp||'-']
+  ]);
 }
 function showBackup(){
   closeSideMenu();
-  if(typeof sp==='function') sp('set');
-  setTimeout(function(){
-    var el=document.querySelector('[onclick*="adminExport"]')||document.querySelector('[onclick*="export"]');
-    if(el) el.scrollIntoView({behavior:'smooth'});
-  }, 250);
+  // Show export/import modal directly
+  var existing = document.getElementById('backupModal');
+  if(existing) existing.remove();
+  var m = document.createElement('div');
+  m.id = 'backupModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  m.onclick = function(e){ if(e.target===m) m.remove(); };
+  var L = function(mn,kr,en){ return lang==='kr'?kr:lang==='en'?en:mn; };
+  m.innerHTML = '<div style="background:var(--sur,#fff);border-radius:16px;padding:22px;max-width:320px;width:100%" onclick="event.stopPropagation()">'
+    + '<h3 style="font-size:16px;font-weight:600;margin:0 0 6px;color:var(--txt,#2C2416)">'+L('Өгөгдөл & Backup','데이터 & 백업','Data & Backup')+'</h3>'
+    + '<p style="font-size:12px;color:var(--mut,#888);margin:0 0 16px;line-height:1.5">'+L('Бүх өгөгдлийг файлд хадгалах эсвэл сэргээх','모든 데이터를 파일로 저장/복원','Save or restore all data')+'</p>'
+    + '<button onclick="exportData();document.getElementById(\'backupModal\').remove()" style="width:100%;padding:12px;border:none;border-radius:10px;background:#C84B2F;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px">📤 '+L('Татах (Export)','내보내기','Export')+'</button>'
+    + '<label style="display:block;width:100%;padding:12px;border:1.5px solid var(--bdr,#ddd);border-radius:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;color:var(--txt,#2C2416)">📥 '+L('Сэргээх (Import)','가져오기','Import')+'<input type="file" accept=".json" style="display:none" onchange="importData(this);document.getElementById(\'backupModal\').remove()"></label>'
+    + '<button onclick="document.getElementById(\'backupModal\').remove()" style="width:100%;padding:10px;border:none;background:none;color:var(--mut,#888);font-size:13px;cursor:pointer;margin-top:8px">'+L('Хаах','닫기','Close')+'</button>'
+    + '</div>';
+  document.body.appendChild(m);
 }
 
 // Override buildSideMenu with our 6-item menu
@@ -2003,8 +2033,8 @@ function buildSideMenu(){
     + '<div class="smi-ic" style="background:rgba(34,197,94,.1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>'
     + '<div class="smi-tx"><div class="smi-t">'+L('Холбоо барих','문의하기','Contact')+'</div></div></div>'
     + '<div class="smi-sep"></div>'
-    // Хэл солих
-    + '<div class="smi" onclick="closeSideMenu();cycleLang()">'
+    // Хэл солих - shows options
+    + '<div class="smi" onclick="showLangPicker()">'
     + '<div class="smi-ic" style="background:rgba(245,239,230,.08)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(245,239,230,.7)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>'
     + '<div class="smi-tx"><div class="smi-t" style="color:rgba(245,239,230,.75)">'+L('Хэл солих','언어 변경','Language')+'</div></div>'
     + '<div style="margin-left:auto;background:rgba(245,239,230,.08);border-radius:6px;padding:3px 8px;font-size:11px;color:rgba(245,239,230,.55)">'+langBadge+'</div></div>'
@@ -2014,6 +2044,34 @@ function buildSideMenu(){
     + '<div class="smi-tx"><div class="smi-t" style="color:#ef4444">'+L('Гарах','로그아웃','Logout')+'</div></div></div>';
 }
 
+
+function showLangPicker(){
+  closeSideMenu();
+  var existing=document.getElementById('langModal'); if(existing) existing.remove();
+  var m=document.createElement('div'); m.id='langModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:flex-end;justify-content:center';
+  m.onclick=function(e){ if(e.target===m) m.remove(); };
+  var langs=[['mn','🇲🇳','Монгол'],['kr','🇰🇷','한국어'],['en','🇬🇧','English']];
+  var items=langs.map(function(lg){
+    var active = (typeof lang!=='undefined' && lang===lg[0]);
+    return '<div onclick="_setLang(\''+lg[0]+'\')" style="display:flex;align-items:center;gap:12px;padding:15px 20px;cursor:pointer;'+(active?'background:rgba(200,75,47,.1)':'')+'">'
+      +'<span style="font-size:22px">'+lg[1]+'</span>'
+      +'<span style="font-size:14px;font-weight:'+(active?'600':'400')+';color:var(--txt,#2C2416);flex:1">'+lg[2]+'</span>'
+      +(active?'<span style="color:#C84B2F;font-size:16px">✓</span>':'')+'</div>';
+  }).join('');
+  m.innerHTML='<div style="background:var(--sur,#fff);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:8px 0 24px" onclick="event.stopPropagation()">'
+    +'<div style="width:36px;height:4px;background:var(--bdr,#ddd);border-radius:2px;margin:8px auto 12px"></div>'
+    +'<h3 style="font-size:15px;font-weight:600;text-align:center;margin:0 0 8px;color:var(--txt,#2C2416)">'+(lang==='kr'?'언어 선택':lang==='en'?'Select Language':'Хэл сонгох')+'</h3>'
+    +items+'</div>';
+  document.body.appendChild(m);
+}
+function _setLang(l){
+  var modal=document.getElementById('langModal');
+  if(typeof setLang==='function') setLang(l);
+  else if(typeof cycleLang==='function'){ var g=0; while(lang!==l&&g<5){cycleLang();g++;} }
+  if(modal) modal.remove();
+  // Rebuild side menu with new language next open
+}
 </script>
 </body>
 </html>
