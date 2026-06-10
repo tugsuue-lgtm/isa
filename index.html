@@ -224,7 +224,7 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',-apple-system,B
 /* SIDE MENU */
 .side-menu-overlay{display:none;position:fixed;inset:0;background:rgba(26,22,18,.5);z-index:200}
 .side-menu-overlay.on{display:block}
-.side-menu{position:fixed;top:0;left:-260px;width:250px;height:100vh;background:var(--sur);z-index:201;box-shadow:4px 0 20px rgba(0,0,0,.15);transition:left .25s ease;display:flex;flex-direction:column;overflow-y:auto}
+.side-menu{position:fixed;top:0;left:-260px;width:250px;height:100vh;background:#2C2416;z-index:201;box-shadow:4px 0 20px rgba(0,0,0,.15);transition:left .25s ease;display:flex;flex-direction:column;overflow-y:auto}
 .side-menu.on{left:0}
 .sm-hdr{background:var(--txt);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
 .sm-hdr-title{font-family:'DM Serif Display',Georgia,serif;font-size:16px;color:#fff}
@@ -784,17 +784,17 @@ setInterval(_patchTX, 100);
 </div>
 <div id="APP" style="display:none" data-ready="1">
 <div class="pg on" id="calPage">
-  <div class="hdr" style="gap:10px"><button class="ham-btn" onclick="openSideMenu()" id="nb_ham_hdr" style="flex-shrink:0"><div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div></button><div><div style="display:flex;align-items:center;gap:10px">
-  <div style="width:32px;height:32px;background:rgba(200,75,47,.12);border-radius:9px;border:1px solid rgba(200,75,47,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-    <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><rect x="3" y="3" width="11" height="11" rx="3" fill="#C84B2F"/><rect x="18" y="3" width="11" height="11" rx="3" fill="rgba(245,239,230,0.22)"/><rect x="3" y="18" width="11" height="11" rx="3" fill="rgba(245,239,230,0.22)"/><rect x="18" y="18" width="11" height="11" rx="3" fill="#C84B2F"/><rect x="13.5" y="13.5" width="5" height="5" rx="1.5" fill="#C84B2F" opacity=".5"/></svg>
+  <div class="hdr" style="display:flex;align-items:center;gap:0;justify-content:space-between">
+  <button class="ham-btn" onclick="openSideMenu()" style="flex-shrink:0"><div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div></button>
+  <div style="display:flex;flex-direction:column;flex:1;padding:0 12px">
+    <span id="hdrGreeting" style="font-size:11px;color:rgba(245,239,230,.5);font-weight:400">Сайн байна уу?</span>
+    <span id="hdrName" style="font-size:14px;color:#F5EFE6;font-weight:600;line-height:1.3">Хэрэглэгч</span>
   </div>
-  <div>
-    <div style="font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:rgba(245,239,230,.85);letter-spacing:.04em;line-height:1">АЖЛЫН</div>
-    <h1 id="hCal" style="font-family:'DM Serif Display',serif;font-size:11px;color:#C84B2F;font-weight:400;line-height:1;margin:0;letter-spacing:.03em">хуваарь</h1>
-  </div>
-</div><div class="hsub" id="hCalSub"></div></div>
-    <div class="hr"><button class="cnb" onclick="cm(-1)">←</button><div class="clbl" id="calLbl"></div><button class="cnb" onclick="cm(1)">→</button></div>
-  </div>
+  <button onclick="openBellChat()" id="bellBtn" style="background:none;border:none;cursor:pointer;position:relative;padding:6px;flex-shrink:0">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    <span id="bellDot" style="display:none;position:absolute;top:3px;right:3px;width:8px;height:8px;background:#C84B2F;border-radius:50%;border:1.5px solid #2C2416"></span>
+  </button>
+</div>
   <div class="cnt">
     <div id="subBanner"></div><div id="limitBanner"></div>
     <div class="cwrap"><div class="cdow" id="cdow"></div><div class="cdays" id="cdays"></div></div>
@@ -2072,6 +2072,38 @@ function _setLang(l){
   if(modal) modal.remove();
   // Rebuild side menu with new language next open
 }
+
+
+// ═══ HEADER & BELL ═══
+function updateHeader(){
+  var g=document.getElementById('hdrGreeting'), n=document.getElementById('hdrName');
+  if(!g||!n) return;
+  var greetings={mn:'Сайн байна уу?',kr:'안녕하세요!',en:'Hello!'};
+  g.textContent = greetings[lang]||greetings.mn;
+  if(cu && cu.username) n.textContent = cu.username;
+}
+setInterval(updateHeader, 1500);
+setTimeout(updateHeader, 500);
+
+// Bell - open chat
+function openBellChat(){
+  if(typeof openChat==='function') openChat(cu && cu.uid);
+  var dot=document.getElementById('bellDot');
+  if(dot) dot.style.display='none';
+}
+
+// Check unread messages for bell dot
+function checkBellDot(){
+  var dot=document.getElementById('bellDot');
+  if(!dot || !cu || !cu.uid) return;
+  if(typeof window.fbUnreadCount==='function'){
+    window.fbUnreadCount(cu.uid, false).then(function(n){
+      dot.style.display = n>0 ? 'block' : 'none';
+    }).catch(function(){});
+  }
+}
+setInterval(checkBellDot, 5000);
+setTimeout(checkBellDot, 2500);
 </script>
 </body>
 </html>
