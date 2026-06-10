@@ -1891,16 +1891,14 @@ setTimeout(renameSetNav, 3000);
 function navEmployers(){
   if(typeof sp==='function') sp('set');
   setTimeout(function(){
-    var el = document.getElementById('setEmpT');
-    if(el){ var ss=el.closest('.ss'); (ss||el).scrollIntoView({behavior:'smooth',block:'start'}); }
-  }, 250);
+    if(typeof renderSetSection==='function') renderSetSection('emp');
+  }, 200);
 }
 function navWorkers(){
   if(typeof sp==='function') sp('set');
   setTimeout(function(){
-    var el = document.getElementById('setWrkT');
-    if(el){ var ss=el.closest('.ss'); (ss||el).scrollIntoView({behavior:'smooth',block:'start'}); }
-  }, 250);
+    if(typeof renderSetSection==='function') renderSetSection('wrk');
+  }, 200);
 }
 
 function _enhanceNav(){
