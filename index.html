@@ -2114,63 +2114,13 @@ setTimeout(checkBellDot, 2000);
 // sp() is the obfuscated page switcher: sp('cal'), sp('set'), sp('dash')
 // Use it directly for reliable navigation
 
-function navGoHome(){
-  if(typeof sp==='function'){ sp('cal'); return; }
-  if(typeof renderCal==='function') renderCal();
-}
+function navGoHome(){ if(typeof sp==='function') sp('cal'); }
 
-function navGoEmp(){
-  if(typeof sp==='function'){ sp('set'); return; }
-  if(typeof renderSet==='function') renderSet();
-}
+function navGoEmp(){ if(typeof sp==='function') sp('set'); }
 
-function navAddWorker(){
-  if(typeof renderWrkList==='function'){ renderWrkList(); return; }
-  if(typeof sp==='function') sp('set');
-}
+function navAddWorker(){ if(typeof openAssign==='function') openAssign(); else { var o=document.getElementById('oAssign'); if(o) o.style.display='flex'; } }
 
-// Hide original nav buttons, inject our custom 3-button nav
-function _rebuildCustomNav(){
-  var nav = document.getElementById('mainNav');
-  if(!nav) return;
-  if(nav.querySelector('.nb-logo-btn')) return; // already done
 
-  // Hide original buttons with CSS
-  var style = document.getElementById('_navOverrideStyle');
-  if(!style){
-    style = document.createElement('style');
-    style.id = '_navOverrideStyle';
-    style.textContent = '#mainNav .nb{display:none!important} #mainNav{justify-content:space-around!important}';
-    document.head.appendChild(style);
-  }
-
-  // Clear and inject our 3-button nav
-  nav.innerHTML = ''
-    + '<div class="nb-side-btn" onclick="navGoEmp()">'
-    + '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
-    + '<rect x="2" y="7" width="20" height="14" rx="2"/>'
-    + '<path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>'
-    + '</svg></div>'
-    + '<div class="nb-center-wrap">'
-    + '<div class="nb-logo-btn" onclick="navGoHome()">'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:28px;height:28px;position:relative">'
-    + '<div style="border-radius:4px;background:#C84B2F"></div>'
-    + '<div style="border-radius:4px;background:rgba(245,239,230,.2)"></div>'
-    + '<div style="border-radius:4px;background:rgba(245,239,230,.2)"></div>'
-    + '<div style="border-radius:4px;background:#C84B2F"></div>'
-    + '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:2px;background:#C84B2F;opacity:.6"></div>'
-    + '</div></div></div>'
-    + '<div class="nb-side-btn" onclick="navAddWorker()">'
-    + '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
-    + '<path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>'
-    + '<circle cx="9" cy="7" r="4"/>'
-    + '<line x1="19" y1="8" x2="19" y2="14"/>'
-    + '<line x1="22" y1="11" x2="16" y2="11"/>'
-    + '</svg></div>';
-}
-setTimeout(_rebuildCustomNav, 800);
-setTimeout(_rebuildCustomNav, 1500);
-setInterval(_rebuildCustomNav, 2000);
 
 // openEmpList - open assign modal or employer list
 function openEmpList(){
