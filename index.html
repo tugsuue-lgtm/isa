@@ -644,6 +644,14 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',-apple-system,B
 /* Hide duplicate search bar from obfuscated renderAdmin */
 #adminCnt > .admin-search { display: none !important; }
 #adminCnt > input[type="text"] { display: none !important; }
+
+.smi{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;transition:background .15s}
+.smi:active{background:rgba(245,239,230,.06)}
+.smi-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.smi-tx{display:flex;flex-direction:column}
+.smi-t{font-size:13px;font-weight:500;color:#F5EFE6}
+.smi-s{font-size:10px;color:rgba(245,239,230,.35);margin-top:1px}
+.smi-sep{height:1px;background:rgba(245,239,230,.07);margin:4px 18px}
 </style>
 </style>
 </head>
@@ -1936,6 +1944,75 @@ setTimeout(_enhanceNav, 400);
   s.textContent='#chatFabWrap{display:none!important}';
   document.head.appendChild(s);
 })();
+
+
+
+// ═══ CUSTOM SIDE MENU ═══
+function showProfile(){
+  closeSideMenu();
+  var u = cu || {};
+  var msg = (lang==='kr'?'프로필\n\n이름: ':lang==='en'?'Profile\n\nName: ':'Профайл\n\nНэр: ') + (u.username||'-')
+    + (lang==='kr'?'\n이메일: ':lang==='en'?'\nEmail: ':'\nИ-мэйл: ') + (u.email||'-')
+    + (lang==='kr'?'\n전화: ':lang==='en'?'\nPhone: ':'\nУтас: ') + (u.phone||'-');
+  alert(msg);
+}
+function showPlan(){
+  closeSideMenu();
+  var u = cu || {};
+  var d = u.exp ? dLeft(u.exp) : 0;
+  var plans = {trial:'Туршилт',basic:'Үндсэн',pro:'Про'};
+  var msg = (lang==='kr'?'권한 정보\n\n':lang==='en'?'Plan Info\n\n':'Эрхийн мэдээлэл\n\n')
+    + (lang==='kr'?'요금제: ':lang==='en'?'Plan: ':'Төлөвлөгөө: ') + (plans[u.plan]||'Туршилт')
+    + (lang==='kr'?'\n남은 일수: ':lang==='en'?'\nDays left: ':'\nҮлдсэн өдөр: ') + (d>0?d:0)
+    + (lang==='kr'?'\n만료일: ':lang==='en'?'\nExpires: ':'\nДуусах огноо: ') + (u.exp||'-');
+  alert(msg);
+}
+function showBackup(){
+  closeSideMenu();
+  if(typeof sp==='function') sp('set');
+  setTimeout(function(){
+    var el=document.querySelector('[onclick*="adminExport"]')||document.querySelector('[onclick*="export"]');
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  }, 250);
+}
+
+// Override buildSideMenu with our 6-item menu
+function buildSideMenu(){
+  var el = document.getElementById('smItems');
+  if(!el) return;
+  var u = cu || {};
+  var L = function(mn,kr,en){ return lang==='kr'?kr:lang==='en'?en:mn; };
+  var langBadge = lang==='kr'?'КР':lang==='en'?'EN':'МН';
+  
+  el.innerHTML = ''
+    // Профайл
+    + '<div class="smi" onclick="showProfile()">'
+    + '<div class="smi-ic" style="background:rgba(200,75,47,.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C84B2F" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>'
+    + '<div class="smi-tx"><div class="smi-t">'+L('Профайл','프로필','Profile')+'</div><div class="smi-s">'+(u.username||'')+'</div></div></div>'
+    // Эрхийн мэдээлэл
+    + '<div class="smi" onclick="showPlan()">'
+    + '<div class="smi-ic" style="background:rgba(234,179,8,.1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.8" stroke-linecap="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>'
+    + '<div class="smi-tx"><div class="smi-t">'+L('Эрхийн мэдээлэл','권한 정보','Plan Info')+'</div></div></div>'
+    + '<div class="smi-sep"></div>'
+    // Backup
+    + '<div class="smi" onclick="showBackup()">'
+    + '<div class="smi-ic" style="background:rgba(59,130,246,.1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>'
+    + '<div class="smi-tx"><div class="smi-t">'+L('Өгөгдөл & Backup','데이터 & 백업','Data & Backup')+'</div></div></div>'
+    // Холбоо барих (чат)
+    + '<div class="smi" onclick="closeSideMenu();openChat()">'
+    + '<div class="smi-ic" style="background:rgba(34,197,94,.1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>'
+    + '<div class="smi-tx"><div class="smi-t">'+L('Холбоо барих','문의하기','Contact')+'</div></div></div>'
+    + '<div class="smi-sep"></div>'
+    // Хэл солих
+    + '<div class="smi" onclick="closeSideMenu();cycleLang()">'
+    + '<div class="smi-ic" style="background:rgba(245,239,230,.08)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(245,239,230,.7)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>'
+    + '<div class="smi-tx"><div class="smi-t" style="color:rgba(245,239,230,.75)">'+L('Хэл солих','언어 변경','Language')+'</div></div>'
+    + '<div style="margin-left:auto;background:rgba(245,239,230,.08);border-radius:6px;padding:3px 8px;font-size:11px;color:rgba(245,239,230,.55)">'+langBadge+'</div></div>'
+    // Гарах
+    + '<div class="smi" onclick="closeSideMenu();doLogout()">'
+    + '<div class="smi-ic" style="background:rgba(239,68,68,.1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>'
+    + '<div class="smi-tx"><div class="smi-t" style="color:#ef4444">'+L('Гарах','로그아웃','Logout')+'</div></div></div>';
+}
 
 </script>
 </body>
