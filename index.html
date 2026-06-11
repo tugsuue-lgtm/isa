@@ -2115,6 +2115,68 @@ function checkBellDot(){
 }
 setInterval(checkBellDot, 5000);
 setTimeout(checkBellDot, 2500);
+
+
+// ═══ AUTO-LOGIN (Remember me) ═══
+// On page load, check if Firebase has a persisted session and auto-launch
+(function(){
+  var attempts = 0;
+  function tryAutoLogin(){
+    attempts++;
+    if(attempts > 40) return; // give up after ~20s
+    
+    // Wait for Firebase auth to be ready
+    if(!window._fbUser){
+      setTimeout(tryAutoLogin, 500);
+      return;
+    }
+    
+    // User is authenticated via persistence
+    var user = window._fbUser;
+    var profile = window._fbProfile;
+    
+    // Already launched? skip
+    if(window._appLaunched) return;
+    
+    // Check if we're still on login screen
+    var ls = document.getElementById('LS');
+    if(ls && ls.style.display === 'none') { window._appLaunched = true; return; }
+    
+    if(!profile){
+      // Profile not loaded yet, wait
+      setTimeout(tryAutoLogin, 500);
+      return;
+    }
+    
+    if(profile.active === false){ return; } // disabled account, stay on login
+    
+    // Set up cu and db like manual login does
+    try {
+      var email = user.email || '';
+      var uid = user.uid;
+      var isAdminAcct = (email === 'machida.admin@gmail.com');
+      
+      if(isAdminAcct){
+        cu = {name:"admin",role:"admin",uid:uid,exp:"2099-12-31",plan:"admin",active:true};
+      } else {
+        cu = Object.assign({}, profile, {name: profile.username || email.split("@")[0], uid: uid});
+      }
+      
+      // Load DB
+      window.fbLoadDB(uid).then(function(dbData){
+        db = dbData || {employers:[],workers:[],schedules:{},cards:{}};
+        if(!db.cards) db.cards = {};
+        return window.fbLoadCfg();
+      }).then(function(cfg){
+        if(cfg && Object.keys(cfg).length) lsSet("hv_cfg", JSON.stringify(cfg));
+        window._appLaunched = true;
+        if(typeof launchApp === 'function') launchApp();
+      }).catch(function(e){ console.warn("auto-login:", e); });
+      
+    } catch(e){ console.warn("auto-login error:", e); }
+  }
+  setTimeout(tryAutoLogin, 800);
+})();
 </script>
 </body>
 </html>
