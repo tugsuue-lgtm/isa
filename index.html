@@ -799,7 +799,7 @@ setInterval(_patchTX, 100);
     </div>
     <button onclick="openBellChat()" id="bellBtn" style="background:none;border:none;cursor:pointer;position:relative;padding:6px;flex-shrink:0">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5EFE6" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      <span id="bellDot" style="display:none;position:absolute;top:3px;right:3px;width:8px;height:8px;background:#C84B2F;border-radius:50%;border:1.5px solid #2C2416"></span>
+      <span id="bellDot" style="display:none;position:absolute;top:0;right:0;min-width:17px;height:17px;background:#C84B2F;color:#fff;border-radius:9px;border:1.5px solid #2C2416;font-size:10px;font-weight:700;padding:0 3px;align-items:center;justify-content:center"></span>
     </button>
   </div>
   <h1 id="hCal" style="display:none"></h1><div class="hsub" id="hCalSub" style="display:none"></div>
@@ -1059,7 +1059,9 @@ window.fbListenMsgs = function(userId, cb) {
 window.fbUnreadCount = async function(userId, countAdmin) {
   try {
     const snap = await getDocs(collection(fbDb,"chats",userId,"messages"));
-    return snap.docs.filter(d => !d.data().read && (countAdmin ? d.data().fromAdmin : !d.data().fromAdmin)).length;
+    // countAdmin=true: admin counts UNREAD messages FROM USER (fromAdmin=false)
+    // countAdmin=false: user counts UNREAD messages FROM ADMIN (fromAdmin=true)
+    return snap.docs.filter(d => !d.data().read && (countAdmin ? !d.data().fromAdmin : d.data().fromAdmin)).length;
   } catch(e) { return 0; }
 };
 window.fbMarkRead = async function(userId, isAdmin) {
@@ -2173,7 +2175,14 @@ function checkBellDot(){
   if(!dot || !cu || !cu.uid) return;
   if(typeof window.fbUnreadCount==='function'){
     window.fbUnreadCount(cu.uid, false).then(function(n){
-      dot.style.display = n>0 ? 'block' : 'none';
+      if(n>0){
+        dot.textContent = n>9 ? '9+' : n;
+        dot.style.display = 'flex';
+        dot.style.alignItems = 'center';
+        dot.style.justifyContent = 'center';
+      } else {
+        dot.style.display = 'none';
+      }
     }).catch(function(){});
   }
 }
