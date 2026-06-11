@@ -2,11 +2,16 @@
 <html lang="mn">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="%231A110A"/><rect x="6" y="6" width="8" height="8" rx="2" fill="%23C84B2F"/><rect x="18" y="6" width="8" height="8" rx="2" fill="%23F5EFE6" opacity="0.3"/><rect x="6" y="18" width="8" height="8" rx="2" fill="%23F5EFE6" opacity="0.3"/><rect x="18" y="18" width="8" height="8" rx="2" fill="%23C84B2F"/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ажлын Хуваарь">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADTklEQVR4nO3dsY1bVxRFUctQ5EypIylwEy7DhboMNeFAKkXBBwRC0LY5JN/71+RaDfAEG3dmOAT/u98//PYL/MyvZw9gLnGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcpPenvOrff/6x54X++vzP6pf4+Onj6pc4fP3ydc8Lffdu81cwbMvi0qJEtmVxaWci++I4JYtLD0zklCwu7Ulk0+8cp5fxwA2nl7Ftw444JpRxuH/JhDIOG5Ysj2NOGYd79swp47B6jz9lSWvjmHY2DretmnY2DktXuRykhXHMPBuHt26beTYO67a5HCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkBbGseF7x2/21m37v3f8euu2uRyktXHMPB63rZp5PJaucjlIy+OYdjzu2TPteKzes+NyzOnj/iVz+tiwZNOPlQl9PGrDhD72bPCkptt5UtMSnvF2g+d/xttA/1LqhJ+GJ3rpOK48YC+biPc5SK8bx/W/90x+NshSrxsH/0kcJHGQxEESB0kcJHGQxEF63Tiuf1Pc2+fwo5f+x9vBf2XLOXE802cgnumzKT/YHcczfXrqmT7V9lP74jgli0sPTOT0/9PuSWTTL6Snl/HADaeXsW3DjjgmlHG4f8mEMg4bliyPY04Zh3v2zCnjsHqP9zlIa+OYdjYOt62adjYOS1e5HKSFccw8G4e3bpt5Ng7rtrkcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQxEESB0kcJHGQFsax/9nr13vrtsnfkL9um8tBWhvHzONx26qZx2PpKpeDtDyOacfjnj3TjsfqPTsux5w+7l8yp48NSzb9WJnQx6M2TOhjzwZParqdJzUt4RlvN3j+Z7zxP+JPWZI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYP0DTSgx0MclHcIAAAAAElFTkSuQmCC">
 <meta name="theme-color" content="#1a1512">
 <title>Ажлын Хуваарь</title>
 <style>
@@ -652,6 +657,7 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',-apple-system,B
 .smi-t{font-size:13px;font-weight:500;color:#2C2416}
 .smi-s{font-size:10px;color:rgba(44,36,22,.45);margin-top:1px}
 .smi-sep{height:1px;background:rgba(44,36,22,.1);margin:4px 18px}
+#subBanner{display:none!important}
 </style>
 </style>
 </head>
@@ -797,9 +803,10 @@ setInterval(_patchTX, 100);
     </button>
   </div>
   <h1 id="hCal" style="display:none"></h1><div class="hsub" id="hCalSub" style="display:none"></div>
-  <div class="hr" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:4px"><button class="cnb" onclick="cm(-1)">←</button><div class="clbl" id="calLbl"></div><button class="cnb" onclick="cm(1)">→</button></div>
+  
 </div>
   <div class="cnt">
+    <div style="display:flex;align-items:center;justify-content:center;gap:18px;padding:10px;margin:10px 12px 0;background:var(--sur);border-radius:12px;border:1px solid var(--bdr)"><button class="cnb" onclick="cm(-1)">←</button><div class="clbl" id="calLbl"></div><button class="cnb" onclick="cm(1)">→</button></div>
     <div id="subBanner"></div><div id="limitBanner"></div>
     <div class="cwrap"><div class="cdow" id="cdow"></div><div class="cdays" id="cdays"></div></div>
     <div id="dpWrap" style="display:none"><div class="dp"><div class="dph"><div class="dpt" id="dpt"></div><button class="btn br bs" id="btnAddAssign" onclick="openAssign()">+ Нэмэх</button></div><div class="alist" id="alist"></div></div></div>
@@ -2118,64 +2125,53 @@ setTimeout(checkBellDot, 2500);
 
 
 // ═══ AUTO-LOGIN (Remember me) ═══
-// On page load, check if Firebase has a persisted session and auto-launch
+// On page load, if Firebase has a persisted session, auto-launch the app
 (function(){
   var attempts = 0;
   function tryAutoLogin(){
     attempts++;
-    if(attempts > 40) return; // give up after ~20s
-    
-    // Wait for Firebase auth to be ready
-    if(!window._fbUser){
-      setTimeout(tryAutoLogin, 500);
-      return;
-    }
-    
-    // User is authenticated via persistence
-    var user = window._fbUser;
-    var profile = window._fbProfile;
-    
-    // Already launched? skip
+    if(attempts > 60) return;
+
+    // Already launched / on app? skip
     if(window._appLaunched) return;
-    
-    // Check if we're still on login screen
     var ls = document.getElementById('LS');
-    if(ls && ls.style.display === 'none') { window._appLaunched = true; return; }
-    
-    if(!profile){
-      // Profile not loaded yet, wait
-      setTimeout(tryAutoLogin, 500);
-      return;
-    }
-    
-    if(profile.active === false){ return; } // disabled account, stay on login
-    
-    // Set up cu and db like manual login does
-    try {
+    if(ls && (ls.style.display === 'none' || getComputedStyle(ls).display === 'none')){ window._appLaunched=true; return; }
+
+    var user = window._fbUser;
+    if(!user){ setTimeout(tryAutoLogin, 400); return; }
+
+    // Load profile ourselves to be safe
+    window.fbLoadProfile(user.uid).then(function(profile){
+      if(window._appLaunched) return;
       var email = user.email || '';
       var uid = user.uid;
       var isAdminAcct = (email === 'machida.admin@gmail.com');
-      
+
       if(isAdminAcct){
         cu = {name:"admin",role:"admin",uid:uid,exp:"2099-12-31",plan:"admin",active:true};
       } else {
+        if(!profile){ return; } // no profile, stay on login
+        if(profile.active === false){ return; } // disabled
         cu = Object.assign({}, profile, {name: profile.username || email.split("@")[0], uid: uid});
       }
-      
-      // Load DB
-      window.fbLoadDB(uid).then(function(dbData){
-        db = dbData || {employers:[],workers:[],schedules:{},cards:{}};
-        if(!db.cards) db.cards = {};
-        return window.fbLoadCfg();
-      }).then(function(cfg){
-        if(cfg && Object.keys(cfg).length) lsSet("hv_cfg", JSON.stringify(cfg));
-        window._appLaunched = true;
-        if(typeof launchApp === 'function') launchApp();
-      }).catch(function(e){ console.warn("auto-login:", e); });
-      
-    } catch(e){ console.warn("auto-login error:", e); }
+
+      return window.fbLoadDB(uid);
+    }).then(function(dbData){
+      if(!cu || window._appLaunched) return;
+      db = dbData || {employers:[],workers:[],schedules:{},cards:{}};
+      if(!db.cards) db.cards = {};
+      return window.fbLoadCfg();
+    }).then(function(cfg){
+      if(!cu || window._appLaunched) return;
+      if(cfg && Object.keys(cfg).length) lsSet("hv_cfg", JSON.stringify(cfg));
+      window._appLaunched = true;
+      if(typeof launchApp === 'function') launchApp();
+    }).catch(function(e){
+      console.warn("auto-login:", e);
+      setTimeout(tryAutoLogin, 600);
+    });
   }
-  setTimeout(tryAutoLogin, 800);
+  setTimeout(tryAutoLogin, 600);
 })();
 </script>
 </body>
